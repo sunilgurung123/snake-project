@@ -20,6 +20,11 @@ function rendomFoodPosition () {
     foodY = Math.floor(Math.random() * 20) + 1;
 }
 
+function randomSnakePosition() {
+    snakeX = Math.floor(Math.random() * 20) + 1;
+    snakeY = Math.floor(Math.random() * 20) + 1;
+}
+
 function moveSnake (event) {
     // console.log(event)
     if (event.key === "ArrowUp" && velocityY != 1){
@@ -49,40 +54,84 @@ function showGameOver () {
         document.getElementById("gameOverMessage").style.display = "block";
 }
 //=====================
-function randomSnakePosition() {
-    snakeX = Math.floor(Math.random() * 20) + 1;
-    snakeY = Math.floor(Math.random() * 20) + 1;
-}
+
 //=======================
 
 function main() {
-    if(gameOver) {
-        return showGameOver()
+    // if(gameOver) {
+    //     return showGameOver()
+    // }
+
+    // if (snakeX === foodX && snakeY === foodY) {
+    //     rendomFoodPosition()
+    //     eatFoodSound.play();
+    //     snakeBody.push([foodX,foodY])
+    //     console.log(snakeBody);
+    // }
+    // for (let i = snakeBody.length-1; i > 0; i-- ){
+    //     snakeBody[i] = snakeBody[i -1];
+    //     }
+    // let setHtml = `<div class="food" style="grid-area: ${foodY}/${foodX}";></div>`
+    // snakeX += velocityX;
+    // snakeY += velocityY;
+    // snakeBody[0] = [snakeX,snakeY]
+    // for (let i = 0; i < snakeBody.length; i++) {
+    //    setHtml += `<div class="snake-head" id="div${i}" style="grid-area: ${snakeBody[i][1]}/${snakeBody[i][0]}";></div>`
+    //    if(i!=0 && snakeBody[0][1]=== snakeBody[i][1] && snakeBody[0][0]=== snakeBody[i][0]) {
+    //     gameOver = true;
+    //    }
+    //     }
+
+    // if (snakeX<=0 || snakeX>20 || snakeY<=0 || snakeY >20) {
+    //     gameOver = true;
+    // }    
+    // board.innerHTML = setHtml;
+
+    if (gameOver) {
+        return showGameOver();
     }
 
+    // Eat food
     if (snakeX === foodX && snakeY === foodY) {
-        rendomFoodPosition()
+        rendomFoodPosition();
         eatFoodSound.play();
-        snakeBody.push([foodX,foodY])
-        console.log(snakeBody);
+        snakeBody.push([foodX, foodY]);
     }
-    for (let i = snakeBody.length-1; i > 0; i-- ){
-        snakeBody[i] = snakeBody[i -1];
-        }
-    let setHtml = `<div class="food" style="grid-area: ${foodY}/${foodX}";></div>`
-    snakeX += velocityX;
-    snakeY += velocityY;
-    snakeBody[0] = [snakeX,snakeY]
-    for (let i = 0; i < snakeBody.length; i++) {
-       setHtml += `<div class="snake-head" id="div${i}" style="grid-area: ${snakeBody[i][1]}/${snakeBody[i][0]}";></div>`
-       if(i!=0 && snakeBody[0][1]=== snakeBody[i][1] && snakeBody[0][0]=== snakeBody[i][0]) {
-        gameOver = true;
-       }
-        }
 
-    if (snakeX<=0 || snakeX>20 || snakeY<=0 || snakeY >20) {
+    // Move body
+    for (let i = snakeBody.length - 1; i > 0; i--) {
+        snakeBody[i] = snakeBody[i - 1];
+    }
+
+    // Calculate next head position
+    let nextX = snakeX + velocityX;
+    let nextY = snakeY + velocityY;
+
+    // Check for wall collision BEFORE applying movement
+    if (nextX <= 0 || nextX > 20 || nextY <= 0 || nextY > 20) {
         gameOver = true;
-    }    
+        return showGameOver();
+    }
+
+    // Update head position
+    snakeX = nextX;
+    snakeY = nextY;
+    snakeBody[0] = [snakeX, snakeY];
+
+    // Check self-collision
+    for (let i = 1; i < snakeBody.length; i++) {
+        if (snakeBody[0][0] === snakeBody[i][0] &&
+            snakeBody[0][1] === snakeBody[i][1]) {
+            gameOver = true;
+            return showGameOver();
+        }
+    }
+
+    // Draw everything
+    let setHtml = `<div class="food" style="grid-area: ${foodY}/${foodX};"></div>`;
+    for (let i = 0; i < snakeBody.length; i++) {
+        setHtml += `<div class="snake-head" id="div${i}" style="grid-area: ${snakeBody[i][1]}/${snakeBody[i][0]};"></div>`;
+    }
     board.innerHTML = setHtml;
 }
 
@@ -107,6 +156,9 @@ function resetGame () {
 }
 
 rendomFoodPosition()
+randomSnakePosition(); 
+snakeBody = [[snakeX, snakeY]];
+console.log("snake body:", snakeBody);
 main();
 setIntervalId = setInterval(main, 300);
 document.addEventListener("keydown", moveSnake);
