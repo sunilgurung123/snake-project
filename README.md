@@ -24,7 +24,7 @@ A simple & basic Snake Game where user control a snake to eat food, grow longer 
 
 ## Getting started
 
-[click here]()
+[click here](https://sunilgurung123.github.io/snake-project/)
 
 ## Future Enhancement
 
