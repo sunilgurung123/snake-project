@@ -1,6 +1,7 @@
 let board= document.querySelector(".board");
 let resetButton = document.querySelector(".reset-btn");
 let gameOverMessage = document.getElementById("gameOverMessage");
+let keys = document.querySelectorAll(".key")
 let foodX;
 let foodY;
 let snakeX;
@@ -50,6 +51,12 @@ function moveSnake (event) {
     } 
     main()
 }
+
+keys.forEach((key) => {
+    key.addEventListener('click', () => {
+        moveSnake({key:key.dataset.key})
+    })
+})
 
 function showGameOver () {
         clearInterval(setIntervalId)
